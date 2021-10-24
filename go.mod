@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.42.1
-	github.com/jamillosantos/migrations v0.0.0-20211024010535-4fc320bd9153
+	github.com/jamillosantos/migrations v0.1.0
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/spf13/afero v1.6.0
 	github.com/stretchr/testify v1.7.0
