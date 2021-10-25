@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path"
@@ -51,6 +52,18 @@ $ migrations create --destination=./migrations
 			}
 		} else {
 			description = strings.Join(args, " ")
+		}
+
+		_, err := os.Stat(destination)
+		if errors.Is(err, os.ErrNotExist) {
+			err = os.MkdirAll(destination, 0750)
+			if err != nil {
+				_, _ = fmt.Fprintln(os.Stderr, err.Error())
+				os.Exit(1)
+			}
+		} else {
+			_, _ = fmt.Fprintln(os.Stderr, err.Error())
+			os.Exit(1)
 		}
 
 		var id string
