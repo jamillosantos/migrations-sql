@@ -61,7 +61,7 @@ $ migrations create --destination=./migrations
 				_, _ = fmt.Fprintln(os.Stderr, err.Error())
 				os.Exit(1)
 			}
-		} else {
+		} else if err != nil {
 			_, _ = fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
 		}
@@ -141,5 +141,4 @@ func init() {
 	createCmd.Flags().StringVarP(&extension, "extension", "e", extension, "Extension of the migration that will be created")
 	createCmd.Flags().BoolVar(&withUndo, "undo", withUndo, "Enable undo file")
 	createCmd.Flags().BoolVar(&withDown, "down", withDown, "Enable down file")
-	createCmd.Flags().BoolVarP(&withUndo, "interactive", "i", withUndo, "Enable interactive mode")
 }
