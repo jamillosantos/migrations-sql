@@ -9,47 +9,31 @@ import (
 
 type DB interface {
 	DBExecer
-	Query(query string, args ...interface{}) (*sql.Rows, error)
+
+	Conn() (*sql.Conn, error)
 }
 
 type Target struct {
-	source    migrations.Source
-	db        DB
-	tableName string
+	source migrations.Source
+	driver Driver
 }
 
 type Option func(target *Target) error
 
-func NewTarget(source migrations.Source, db DB, options ...Option) (*Target, error) {
+func NewTarget(source migrations.Source, driver Driver) (*Target, error) {
 	target := &Target{
 		source,
-		db,
-		"_migrations",
-	}
-	for _, opt := range options {
-		err := opt(target)
-		if err != nil {
-			return nil, err
-		}
+		driver,
 	}
 	return target, nil
 }
 
-func Table(tableName string) Option {
-	return func(target *Target) error {
-		target.tableName = tableName
-		return nil
-	}
-}
-
 func (target *Target) Create() error {
-	_, err := target.db.Exec(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s (id BIGINT PRIMARY KEY)", target.tableName))
-	return err
+	return target.driver.CreateMigrationsTable()
 }
 
 func (target *Target) Destroy() error {
-	_, err := target.db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", target.tableName))
-	return err
+	return target.driver.DropMigrationsTable()
 }
 
 func (target *Target) Current() (migrations.Migration, error) {
@@ -64,7 +48,7 @@ func (target *Target) Current() (migrations.Migration, error) {
 }
 
 func (target *Target) Done() ([]migrations.Migration, error) {
-	rs, err := target.db.Query(fmt.Sprintf("SELECT id FROM %s ORDER BY id ASC", target.tableName))
+	rs, err := target.driver.Query(fmt.Sprintf("SELECT id FROM %s ORDER BY id ASC", target.tableName))
 	if err != nil {
 		return nil, err
 	}
@@ -90,11 +74,11 @@ func (target *Target) Done() ([]migrations.Migration, error) {
 }
 
 func (target *Target) Add(migration migrations.Migration) error {
-	_, err := target.db.Exec(fmt.Sprintf("INSERT INTO %s (id) VALUES (?)", target.tableName), migration.ID())
+	_, err := target.driver.Exec(fmt.Sprintf("INSERT INTO %s (id) VALUES (?)", target.tableName), migration.ID())
 	return err
 }
 
 func (target *Target) Remove(migration migrations.Migration) error {
-	_, err := target.db.Exec(fmt.Sprintf("DELETE FROM %s WHERE id = ?", target.tableName), migration.ID())
+	_, err := target.driver.Exec(fmt.Sprintf("DELETE FROM %s WHERE id = ?", target.tableName), migration.ID())
 	return err
 }

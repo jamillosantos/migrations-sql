@@ -47,7 +47,7 @@ func TestNewTarget(t *testing.T) {
 		target, err := NewTarget(source, db)
 		assert.NoError(t, err)
 
-		assert.Equal(t, db, target.db)
+		assert.Equal(t, db, target.driver)
 		assert.Equal(t, source, target.source)
 	})
 

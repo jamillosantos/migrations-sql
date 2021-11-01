@@ -29,7 +29,7 @@ type DBExecer interface {
 type sourceContextKey string
 
 const (
-	dbContextKey sourceContextKey = "db"
+	connContextKey sourceContextKey = "db"
 )
 
 func (s sourceContextKey) String() string {
@@ -210,7 +210,7 @@ func (migration *migrationSQL) SetPrevious(value migrations.Migration) migration
 }
 
 func dbFromContext(ctx context.Context) (DBExecer, error) {
-	dbInterface := ctx.Value(dbContextKey)
+	dbInterface := ctx.Value(connContextKey)
 	if dbInterface == nil {
 		return nil, ErrDBInstanceNotFound
 	}
@@ -223,9 +223,9 @@ func dbFromContext(ctx context.Context) (DBExecer, error) {
 	return db, nil
 }
 
-// ContextWithDB returns a context with the given db attached.
-func ContextWithDB(ctx context.Context, db DB) context.Context {
-	return context.WithValue(ctx, dbContextKey, db)
+// ContextWithConn returns a context with the given db attached.
+func ContextWithConn(ctx context.Context, conn *sql.Conn) context.Context {
+	return context.WithValue(ctx, connContextKey, conn)
 }
 
 func (migration *migrationSQL) executeSQL(ctx context.Context, sql string) error {
