@@ -7,7 +7,7 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.42.1
-	github.com/jamillosantos/migrations v0.1.0
+	github.com/jamillosantos/migrations v0.2.0
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/spf13/afero v1.6.0
 	github.com/spf13/cobra v1.2.1
