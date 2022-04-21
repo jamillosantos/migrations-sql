@@ -55,8 +55,8 @@ type migration struct {
 	undoFile    string
 }
 
-func NewSourceSQLFromDir(fs fs.ReadDirFS) (migrations.Source, error) {
-	entries, err := fs.ReadDir(".")
+func NewSourceSQLFromDir(fs fs.ReadDirFS, folder string) (migrations.Source, error) {
+	entries, err := fs.ReadDir(folder)
 	if err != nil {
 		return nil, fmt.Errorf("failed listing migrations files: %w", err)
 	}

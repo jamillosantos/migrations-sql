@@ -7,8 +7,8 @@ import (
 	"github.com/jamillosantos/migrations"
 )
 
-func Migrate(ctx context.Context, dirFS fs.ReadDirFS, db DB, reporter migrations.RunnerReporter) error {
-	source, err := NewSourceSQLFromDir(dirFS)
+func Migrate(ctx context.Context, dirFS fs.ReadDirFS, folder string, db DB, reporter migrations.RunnerReporter) error {
+	source, err := NewSourceSQLFromDir(dirFS, folder)
 	if err != nil {
 		return err
 	}
