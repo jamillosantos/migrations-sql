@@ -90,11 +90,11 @@ func (target *Target) Done() ([]migrations.Migration, error) {
 }
 
 func (target *Target) Add(migration migrations.Migration) error {
-	_, err := target.db.Exec(fmt.Sprintf("INSERT INTO %s (id) VALUES (?)", target.tableName), migration.ID())
+	_, err := target.db.Exec(fmt.Sprintf("INSERT INTO %s (id) VALUES ($1)", target.tableName), migration.ID())
 	return err
 }
 
 func (target *Target) Remove(migration migrations.Migration) error {
-	_, err := target.db.Exec(fmt.Sprintf("DELETE FROM %s WHERE id = ?", target.tableName), migration.ID())
+	_, err := target.db.Exec(fmt.Sprintf("DELETE FROM %s WHERE id = $1", target.tableName), migration.ID())
 	return err
 }
