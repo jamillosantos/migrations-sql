@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"path"
 	"regexp"
 	"strings"
 
@@ -81,13 +82,13 @@ func NewSourceSQLFromDir(fs fs.ReadDirFS, folder string) (migrations.Source, err
 				// TODO: Improve this error
 				return nil, fmt.Errorf("migration %s already defined by %s", entry.Name(), migrationEntry.doFile)
 			}
-			migrationEntry.doFile = entry.Name()
+			migrationEntry.doFile = path.Join(folder, entry.Name())
 		case "down", "undo":
 			if migrationEntry.undoFile != "" {
 				// TODO: Improve this error
 				return nil, fmt.Errorf("migration %s already defined by %s", entry.Name(), migrationEntry.doFile)
 			}
-			migrationEntry.undoFile = entry.Name()
+			migrationEntry.undoFile = path.Join(folder, entry.Name())
 		default:
 			return nil, fmt.Errorf("%w: %s (%s)", ErrInvalidMigrationDirection, t, entry.Name())
 		}
