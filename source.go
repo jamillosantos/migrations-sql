@@ -12,29 +12,18 @@ import (
 	"strings"
 
 	"github.com/jamillosantos/migrations"
+
+	"github.com/jamillosantos/migrations-sql/target"
 )
 
 var (
 	ErrInvalidMigrationDirection = errors.New("invalid migration direction")
-	ErrDBInstanceNotFound        = errors.New("db instance not found on the context")
-	ErrInvalidDBInstance         = errors.New("context has an invalid db instance")
 
 	migrationFileNameRegexp = regexp.MustCompile(`^(\d+)_(.*?)(\.(do|undo|down|up))?\.sql$`)
 )
 
-// DBExecer
 type DBExecer interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)
-}
-
-type sourceContextKey string
-
-const (
-	dbContextKey sourceContextKey = "db"
-)
-
-func (s sourceContextKey) String() string {
-	return "migrations_sql_source_" + string(s)
 }
 
 // parseSQLFile checks if the entry is valid and returns its id, description and type.
@@ -210,27 +199,8 @@ func (migration *migrationSQL) SetPrevious(value migrations.Migration) migration
 	return migration
 }
 
-func dbFromContext(ctx context.Context) (DBExecer, error) {
-	dbInterface := ctx.Value(dbContextKey)
-	if dbInterface == nil {
-		return nil, ErrDBInstanceNotFound
-	}
-
-	db, ok := dbInterface.(DBExecer)
-	if !ok {
-		return nil, ErrInvalidDBInstance
-	}
-
-	return db, nil
-}
-
-// ContextWithDB returns a context with the given db attached.
-func ContextWithDB(ctx context.Context, db DB) context.Context {
-	return context.WithValue(ctx, dbContextKey, db)
-}
-
 func (migration *migrationSQL) executeSQL(ctx context.Context, sql string) error {
-	db, err := dbFromContext(ctx)
+	db, err := target.DBFromContext(ctx)
 	if err != nil {
 		return err
 	}

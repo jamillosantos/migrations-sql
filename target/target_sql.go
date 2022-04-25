@@ -1,14 +1,24 @@
-package migrationsql
+package target
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/jamillosantos/migrations"
 )
 
+var (
+	ErrMissingSource = errors.New("source is required")
+)
+
+type DBExecer interface {
+	Exec(query string, args ...interface{}) (sql.Result, error)
+}
+
 type DB interface {
 	DBExecer
+	Begin() (*sql.Tx, error)
 	Query(query string, args ...interface{}) (*sql.Rows, error)
 }
 
@@ -16,15 +26,28 @@ type Target struct {
 	source    migrations.Source
 	db        DB
 	tableName string
+	driver    Driver
 }
 
 type Option func(target *Target) error
 
-func NewTarget(source migrations.Source, db DB, options ...Option) (*Target, error) {
+type Driver interface {
+	migrations.TargetLocker
+	Add(migration migrations.Migration) error
+	Remove(migration migrations.Migration) error
+}
+
+const DefaultMigrationsTableName = "_migrations"
+
+func NewTarget(source migrations.Source, db DB, driver Driver, options ...Option) (*Target, error) {
+	if source == nil {
+		return nil, ErrMissingSource
+	}
 	target := &Target{
-		source,
-		db,
-		"_migrations",
+		source:    source,
+		db:        db,
+		driver:    driver,
+		tableName: DefaultMigrationsTableName,
 	}
 	for _, opt := range options {
 		err := opt(target)
@@ -90,11 +113,9 @@ func (target *Target) Done() ([]migrations.Migration, error) {
 }
 
 func (target *Target) Add(migration migrations.Migration) error {
-	_, err := target.db.Exec(fmt.Sprintf("INSERT INTO %s (id) VALUES ($1)", target.tableName), migration.ID())
-	return err
+	return target.driver.Add(migration)
 }
 
 func (target *Target) Remove(migration migrations.Migration) error {
-	_, err := target.db.Exec(fmt.Sprintf("DELETE FROM %s WHERE id = $1", target.tableName), migration.ID())
-	return err
+	return target.driver.Remove(migration)
 }

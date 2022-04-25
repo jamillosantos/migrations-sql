@@ -1,7 +1,7 @@
 //go:build integration
 // +build integration
 
-package migrationsql_test
+package target_test
 
 import (
 	"context"
@@ -17,10 +17,11 @@ import (
 	migrationszap "github.com/jamillosantos/migrations/zap"
 
 	migrationsql "github.com/jamillosantos/migrations-sql"
+	"github.com/jamillosantos/migrations-sql/postgres"
 )
 
 const (
-	base  = "tests/migrations"
+	base  = "../tests/migrations"
 	case1 = base + "/case1"
 	case2 = base + "/case2"
 	case3 = base + "/case3"
@@ -36,7 +37,15 @@ func migrate(t *testing.T, db *sql.DB, migrationCase string) error {
 	logger, err := zap.NewDevelopment()
 	require.NoError(t, err)
 
-	return migrationsql.Migrate(ctx, dirFS, db, migrationszap.NewRunnerReport(logger))
+	source, err := migrationsql.NewSourceSQLFromDir(dirFS, ".")
+	require.NoError(t, err)
+
+	return postgres.Migrate(ctx, postgres.MigrateRequest{
+		DB:           db,
+		Source:       source,
+		DatabaseName: "database-name",
+		Reporter:     migrationszap.NewRunnerReport(logger),
+	})
 }
 
 func TestMigrate_Integration(t *testing.T) {

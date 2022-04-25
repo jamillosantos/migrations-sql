@@ -122,7 +122,3 @@ func Test_loadMigrationFile(t *testing.T) {
 		assert.ErrorIs(t, err, wantErr)
 	})
 }
-
-func Test_newSourceSQLFromFiles(t *testing.T) {
-	// t.Run("should fail when getting the ")
-}
