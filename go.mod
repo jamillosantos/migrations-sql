@@ -12,7 +12,7 @@ require (
 	github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72
 	github.com/spf13/afero v1.6.0
 	github.com/spf13/cobra v1.2.1
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.3
 	go.uber.org/zap v1.19.1
 )
 
@@ -126,7 +126,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.8.1 // indirect
 	github.com/ssgreg/nlreturn/v2 v2.1.0 // indirect
-	github.com/stretchr/objx v0.1.1 // indirect
+	github.com/stretchr/objx v0.4.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/tdakkota/asciicheck v0.0.0-20200416200610-e657995f937b // indirect
 	github.com/tetafro/godot v1.4.9 // indirect
@@ -148,7 +148,7 @@ require (
 	google.golang.org/protobuf v1.26.0 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	honnef.co/go/tools v0.2.1 // indirect
 	mvdan.cc/gofumpt v0.1.1 // indirect
 	mvdan.cc/interfacer v0.0.0-20180901003855-c20040233aed // indirect
