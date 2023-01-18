@@ -45,7 +45,8 @@ type migration struct {
 	undoFile    string
 }
 
-func NewSourceSQLFromDir(fs fs.ReadDirFS, folder string) (migrations.Source, error) {
+func NewSourceSQLFromDir(fs fs.ReadDirFS, folder string, opts ...Option) (migrations.Source, error) {
+	options := defaultOptions()
 	entries, err := fs.ReadDir(folder)
 	if err != nil {
 		return nil, fmt.Errorf("failed listing migrations files: %w", err)
@@ -82,8 +83,14 @@ func NewSourceSQLFromDir(fs fs.ReadDirFS, folder string) (migrations.Source, err
 			return nil, fmt.Errorf("%w: %s (%s)", ErrInvalidMigrationDirection, t, entry.Name())
 		}
 	}
-	source := migrations.NewSource()
-	return newSourceSQLFromFiles(source, fs, migrationSet)
+	if options.source == nil {
+		options.source = migrations.NewSource()
+	}
+	return newSourceSQLFromFiles(options.source, fs, migrationSet)
+}
+
+func defaultOptions() options {
+	return options{}
 }
 
 type SourceWithAdd interface {

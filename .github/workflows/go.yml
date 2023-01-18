@@ -10,10 +10,10 @@ jobs:
     name: Generation
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.17
+      - name: Set up Go 1.19
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17
+          go-version: 1.19
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v3
@@ -36,10 +36,10 @@ jobs:
     needs:
       - generation
     steps:
-      - name: Set up Go 1.17
+      - name: Set up Go 1.19
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17
+          go-version: 1.19
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v3
@@ -65,10 +65,10 @@ jobs:
     needs:
       - generation
     steps:
-      - name: Set up Go 1.17
+      - name: Set up Go 1.19
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17
+          go-version: 1.19
         id: go
 
       - name: Check out code into the Go module directory
@@ -98,10 +98,10 @@ jobs:
       - generation
       - unit-tests
     steps:
-      - name: Set up Go 1.17
+      - name: Set up Go 1.19
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17
+          go-version: 1.19
         id: go
 
       - name: Check out code into the Go module directory
@@ -130,10 +130,10 @@ jobs:
     needs:
       - generation
     steps:
-      - name: Set up Go 1.17
+      - name: Set up Go 1.19
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17
+          go-version: 1.19
         id: go
 
       - name: Check out code into the Go module directory
