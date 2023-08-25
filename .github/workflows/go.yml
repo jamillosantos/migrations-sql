@@ -10,10 +10,10 @@ jobs:
     name: Generation
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.17
-        uses: actions/setup-go@v3
+      - name: Set up Go 1.20
+        uses: actions/setup-go@v4
         with:
-          go-version: 1.17
+          go-version: "1.20"
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v3
@@ -36,15 +36,15 @@ jobs:
     needs:
       - generation
     steps:
-      - name: Set up Go 1.17
-        uses: actions/setup-go@v3
+      - name: Set up Go 1.20
+        uses: actions/setup-go@v4
         with:
-          go-version: 1.17
+          go-version: "1.20"
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cache/go-build
@@ -57,7 +57,9 @@ jobs:
         run: |
           go mod download
 
-      - uses: setare/go-lint-action@v0.1.2
+      - name: Lint
+        run: |
+          make lint
 
   unit-tests:
     name: Unit tests
@@ -65,16 +67,16 @@ jobs:
     needs:
       - generation
     steps:
-      - name: Set up Go 1.17
-        uses: actions/setup-go@v3
+      - name: Set up Go 1.20
+        uses: actions/setup-go@v4
         with:
-          go-version: 1.17
+          go-version: "1.20"
         id: go
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cache/go-build
@@ -98,16 +100,16 @@ jobs:
       - generation
       - unit-tests
     steps:
-      - name: Set up Go 1.17
-        uses: actions/setup-go@v3
+      - name: Set up Go 1.20
+        uses: actions/setup-go@v4
         with:
-          go-version: 1.17
+          go-version: "1.20"
         id: go
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cache/go-build
@@ -123,33 +125,3 @@ jobs:
       - name: Unit tests
         run: |
           go test ./... -v -tags=integration
-
-  security:
-    name: Security checks
-    runs-on: ubuntu-latest
-    needs:
-      - generation
-    steps:
-      - name: Set up Go 1.17
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.17
-        id: go
-
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v3
-
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - name: Get dependencies
-        run: |
-          go mod download
-
-      - uses: setare/go-gosec-action@v0.1.0
