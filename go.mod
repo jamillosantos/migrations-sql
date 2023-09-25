@@ -10,7 +10,7 @@ require (
 	github.com/jamillosantos/migrations v0.0.0-20230824234908-3e85aaf1c9c8
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/spaolacci/murmur3 v1.1.0
-	github.com/spf13/afero v1.9.5
+	github.com/spf13/afero v1.10.0
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/zap v1.25.0
